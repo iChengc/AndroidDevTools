@@ -123,4 +123,3 @@ echo Saving screenshot to ${capture_dir}/$screenshot
 `$adb -s $selected_device pull /mnt/sdcard/screenshot.png ${capture_dir}/$screenshot>/dev/null>2`
 $adb -s $selected_device shell rm -f -r /mnt/sdcard/screenshot.png
 clear_env
-read rr
