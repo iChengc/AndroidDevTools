@@ -1,8 +1,11 @@
 @echo off
 setlocal enabledelayedexpansion
-set jenkinsUserName=xin_lei
-set jenkinsPassword=Initial0
+rem %~f0 ==> get the path of the script.
+rem %~dp0 ==> get the directory path of the script that holds the script.
+rem %[1-9] ==> get the parameters.
 
+rem Set variables
+rem set package_name=com.perkinelmer.pivot
 set work_dir=%cd%
 set script_dir=%~dp0
 
@@ -21,7 +24,6 @@ set devices=
 rem the selected device
 set selected_devices=
 set adb="%script_dir%\bin\adb"
-set curl="%script_dir%\bin\curl\bin\curl.exe"
 @%adb% kill-server
 
 rem Change the adb server port
@@ -59,8 +61,7 @@ if !device_count! == 1 (
 		set  /a device_count=0
 		echo 你一直在欺骗我，有本事再敲回车试试！
 		set /p tmp=
-		rem goto :EOF
-		goto ClenUP
+		goto :EOF
 	)
 )
 
@@ -76,8 +77,7 @@ if !device_count! == 2 (
 		)
 	)
 	echo 出错了啊！
-	rem goto :EOF
-	goto ClenUP
+	goto :EOF
 )
 
 set /a count=0
@@ -94,52 +94,24 @@ if !device_count! geq 3 (
 		)
 	)
 	
-	set /p devic_id=发现了!multi_devices_count!台设备，输入要安装到的设备号（1, !multi_devices_count!）:
+	set /p devic_id=发现了!multi_devices_count!台设备，输入要开启wifi调试的设备号（1, !multi_devices_count!）:
 	set /a count=0
 	for %%d in (!multi_devices!) do (
 		set /a count=!count!+1
 		if !devic_id! == !count! (
 			set selected_devices=%%d
+			
 			goto InstallStart
 		)
 	)
 	echo 出错了啊！
-	rem goto :EOF
-	goto ClenUP
+	goto :EOF
 )
 
 :InstallStart
-set packageWillInstall=%~dp0\iPos.apk
-echo 请输入Jenkins build Url:
-set jenkinsUrl=""
-set /p jenkinsUrl=
-if %jenkinsUrl%=="" (
-	echo 出错了啊！
-	rem goto :EOF
-	goto ClenUP
-)
-
-rem :LoginJenkins
-mkdir cache
-set cookiesLoc=%~dp0\cache\cookies
-set jenkinsLoginUrl="https://jenkins.nexttao.com/j_acegi_security_check"
-set loginInfo="j_username=jinhai_ma&j_password=Initial0&from=/&json={\"j_username\": \"jinhai_ma\", \"j_password\": \"Initial0\", \"remember_me\": false, \"from\": \"/\"}&Submit=登录"
-rem set loginInfo='j_username=%jenkinsUserName%&j_password=%jenkinsPassword%0&remember_me=on&from=/&json={"j_username": "%jenkinsUserName%", "j_password": "%jenkinsPassword%", "remember_me": true, "from": "/"}&Submit=登录'
-@curl -c %cookiesLoc% -d %loginInfo% %jenkinsLoginUrl% 
-
-rem set cookies="ACEGI_SECURITY_HASHED_REMEMBER_ME_COOKIE="eGluX2xlaToxNDg3NzMxNjEyNjIxOjhmOGZmOWU3MTc0MDIyNGQxNThiNTYwYWY0MjUxN2JjMTYxY2FmOGNhNTAwZTQ0NmM2ODhjNjA2YzBkNTg0MGM="; screenResolution=1366x768; JSESSIONID.7551707a=1ewkwfykwxapq9gua452oqjgl"
-@%curl% -b %cookiesLoc% %jenkinsUrl% -o %packageWillInstall%
-
-echo 正在安装%packageWillInstall% 到 %selected_devices%...
-
-rem @adb -s %selected_devices% uninstall %package_name%
-@%adb% -s %selected_devices% push %packageWillInstall% /mnt/sdcard/1.apk
-@%adb% -s %selected_devices% shell pm install -r /mnt/sdcard/1.apk
-echo 安装完成
-
-:ClenUP
+@%adb% -s %selected_devices% tcpip 5555
 @%adb% kill-server
-@RD /S /Q cache
+echo 安装成功
 @ping -n 3 127.1>nul
 @echo on
 
