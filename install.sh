@@ -127,4 +127,5 @@ apk_path=$(echo ${apk_path} | sed "s/'//g")
 echo installing $apk_path to $selected_device
 $adb -s $selected_device push "${apk_path}" /mnt/sdcard/1.apk
 $adb -s $selected_device shell pm install -r /mnt/sdcard/1.apk
+$adb shell am start -n "me.everlive/me.everlive.niaoda.ui.SplashActivity" -a android.intent.action.MAIN -c android.intent.category.LAUNCHER
 clear_env

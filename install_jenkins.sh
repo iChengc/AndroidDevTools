@@ -12,7 +12,7 @@ function clear_env() {
 PLATFORM=`uname`
 tmp=`echo $PLATFORM | grep "MINGW32"`
 
-if [ -z "$tmp" ]
+if [ -z "$tmp" ];
 then
     case $PLATFORM in
       HP-UX)
