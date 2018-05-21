@@ -4,7 +4,7 @@ script_dir=$(cd `dirname $0` && pwd)
 cd $script_dir
 
 function clear_env() {
-    `$adb kill-server > /dev/null > 2`
+    #`$adb kill-server > /dev/null > 2`
     rm -rf ./2
 }
 
@@ -55,12 +55,19 @@ case $OS in
       adb=$script_dir/bin/linux_adb ;;
 esac
 
+#tm=`whereis adb | awk -F '[: ]+' '{print $0}'`
+#echo `whereis adb`
+#if [ -n '$tm' ]; then
+#        echo hfhfhi
+#	adb=$tm
+#fi
+
 #kill the default adb server
-`$adb kill-server>/dev/null>2`
+#`$adb kill-server>/dev/null>2`
 
-export ANDROID_ADB_SERVER_PORT=1993
-`$adb start-server>/dev/null>2`
-
+#export ANDROID_ADB_SERVER_PORT=1993
+#`$adb start-server>/dev/null>2`
+#echo $adb
 `$adb devices | grep "device$" | awk '{print $1;}' >/dev/null>2`
 
 # The count of the pluged in device(s)

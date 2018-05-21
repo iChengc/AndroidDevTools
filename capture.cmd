@@ -44,8 +44,8 @@ if !device_count! == 1 (
 	if !no_device_count!==1 (
 	set  /a device_count=0
 	
-	echo 你在欺骗我感情嘛! 设备都不连怎么让我给你装啊！
-	echo 插上设备后，回车继续安装:
+	echo 你在欺骗我感情嘛! 设备都不连怎么让我给你截屏啊！
+	echo 插上设备后，回车继续:
 	set /p tmp=
 	goto DetectDevice )
 	
@@ -53,7 +53,7 @@ if !device_count! == 1 (
 	set  /a device_count=0
 	
 	echo 都说了要你去插上设备了！
-	echo 赶快去插上设备后，回车继续安装:
+	echo 赶快去插上设备后，回车继续:
 	set /p tmp=
 	goto DetectDevice ) 
 	
@@ -111,11 +111,15 @@ if !device_count! geq 3 (
 echo 正在截屏...
 rem @adb -s %selected_devices% uninstall %package_name%
 rem @adb -s %selected_devices% push %packageWillInstall% /mnt/sdcard/1.apk
-@adb -s %selected_devices% shell /system/bin/screencap -p /mnt/sdcard/screenshot.png
+%adb% -s %selected_devices% shell /system/bin/screencap -p /mnt/sdcard/screenshot.png
 set name=%date:~0,4%%date:~5,2%%date:~8,2%%time:~0,2%%time:~3,2%%time:~6,2%
-echo 正在保存截屏 %name%.png 到桌面...
-@adb -s %selected_devices% pull /mnt/sdcard/screenshot.png  %USERPROFILE%\Desktop\%name%.png
-@adb -s %selected_devices% shell rm -f -r /mnt/sdcard/screenshot.png
+echo 正在保存截屏 %name%.png 到%script_dir%\capture\...
+if not exist %script_dir%\capture (
+	mkdir %script_dir%\capture
+)
+%adb% -s %selected_devices% pull /mnt/sdcard/screenshot.png %script_dir%\capture\%name%.png
+rem %USERPROFILE%\Desktop\%name%.png
+%adb% -s %selected_devices% shell rm -f -r /mnt/sdcard/screenshot.png
 rem %USERPROFILE%\Desktop\%name%.png
 @echo on
 

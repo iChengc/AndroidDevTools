@@ -39,7 +39,7 @@ jar_name=$(echo $filePath | awk -F "[/.]" '{print $(NF-1)}')
 javac -d . $filePath
 
 if [ -f $(pwd)/$classPath/$jar_name.class ]; then
-  jar cvf $jar_name.jar $classPath/$jar_name.class
+  jar cvf $jar_name.jar $classPath/*.class
 else
   echo 编译出错
 fi

@@ -56,11 +56,19 @@ case $OS in
       adb=$script_dir/bin/linux_adb ;;
 esac
 
-#kill the default adb server
-`$adb kill-server>/dev/null>2`
+tm=`whereis adb | awk -F '[: ]+' '{print $2}'`
+echo $tm
+if [ '$tm' != '' ]; then
+	adb=$tm
+fi
 
-export ANDROID_ADB_SERVER_PORT=1993
-`$adb start-server>/dev/null>2`
+#kill the default adb server
+#`$adb kill-server>/dev/null>2`
+#$adb connect 192.168.11.73:5555
+$adb devices
+
+#export ANDROID_ADB_SERVER_PORT=1993
+#`$adb start-server>/dev/null>2`
 
 `$adb devices | grep "device$" | awk '{print $1;}' >/dev/null>2`
 
@@ -118,7 +126,7 @@ mkdir cache
 apk_path=./cache/iPos.apk
 cookieLoc=./cache/cookie
 jenkinsLoginUrl="https://jenkins.nexttao.com/j_acegi_security_check"
-loginInfo='j_username=jinhai_ma&j_password=Initial0&from=/&json={"j_username": "jinhai_ma", "j_password": "Initial0", "remember_me": false, "from": "/"}&Submit=登录'
+loginInfo='j_username=jinhai_ma&j_password=Initial0&from=/&json={"j_username": "cheng_cheng", "j_password": "Initial0", "remember_me": false, "from": "/"}&Submit=登录'
 curl -c $cookieLoc -d "$loginInfo" "$jenkinsLoginUrl"
 curl -b $cookieLoc "$jenkins_url" -o $apk_path 
 
